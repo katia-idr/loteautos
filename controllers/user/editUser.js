@@ -1,114 +1,69 @@
 const getDB = require('../../database/getDB');
-const bcrypt = require('bcrypt');
-const showError = require ('../../helpers');
+const { showError } = require('../../helpers');
 
 const editUser = async (req, res, next) => {
     let connection;
 
     try {
+        // Abrimos una nueva conexion a la base de datos
         connection = await getDB();
 
-        const idUser = req.userAuth.id;
-        const {
-            nombre,
-            apellido1,
-            apellido2,
-            email,
-            oldPass,
-            newPass,
-        } = req.body;
+        // Recuperamos el id del usuario a actualizar
+        const { idUser } = req.params;
 
-        if (
-            !(
-                nombre ||
-                apellido1 ||
-                apellido2 ||
-                oldPass ||
-                newPass ||
-                email ||
-            )
-        ) {
-            throw showError('No has hecho ningún cambio.', 400);
-        }
+        // Recuperamos los datos del body
+        const { nombre, apellido1, apellido2, email } = req.body;
 
-        const [[user]] = await connection.query(
-            `select * from user where id = ?`,
+        // Recuperamos los datos del usuario para no modificar datos a nulo
+        const [user] = await connection.query(
+            `SELECT * FROM user WHERE id = ?`,
             [idUser]
         );
 
-        let userUrl;
-        if (url) {
-            if (!(url.includes('https://') || url.includes('http://'))) {
-                userUrl = 'http://' + url;
-            } else {
-                userUrl = url;
-            }
-        }
-
-        let hashedPassword = null;
-
-        if (newPass && !oldPass) {
+        // Podríamos comprobar si falta algun dato obligatorio
+        if (!nombre) {
             throw showError(
-                'Necesitas introducir la contraseña anterior.',
+                'Por favor escribe tu nombre.',
                 400
             );
         }
 
-        if (oldPass) {
-            if (!newPass) {
-                throw showError(
-                    'Necesitas introducir una contraseña nueva.',
-                    400
-                );
-            }
-            const isValid = await bcrypt.compare(oldPass, user.password);
-
-            if (!isValid) {
-                throw generateError(
-                    'Contraseña incorrecta. Intenta de nuevo.',
-                    401
-                );
-            }
-            hashedPassword = await bcrypt.hash(newPass, 10);
-        }
-
-        if (email) {
-            const [[userWithSameEmail]] = await connection.query(
-                `select id from user where email = ?`,
-                [email]
+        if (!apellido1) {
+            throw showError(
+                'Por favor escribe tu apellido.',
+                400
             );
-            if (userWithSameEmail) {
-                throw generateError(
-                    'Ya hay un usuario registrado con ese email.',
-                    409
-                );
-            }
         }
 
 
+        //Comprobar que no haya otro usuario con el mismo mail
+        const [userMail] = await connection.query (
+            `SELECT id FROM user WHERE email = ?`,
+            [email]
+        )
+
+        if (userMail.length > 0){
+            throw showError('¡Ups! Ya existe un usuario registrado con ese mail.', 409)
+        }
+
+        // Actualizamos los campos del usuario según lo que cubra
         await connection.query(
-            `
-         update user set nombre = ?, apellido1 = ?, apellido2 = ?, password = ?, email = ? where id = ?`,
-            [
-                nombre || user.nombre,
-                apellido1 || user.apellido1,
-                apellido2 || user.apellido2,
-                hashedPassword || user.password,
-                email || user.email,
-                idUser,
-            ]
+            `UPDATE user SET nombre = ?, apellido1 = ?, apellido2 = ?, email = ? WHERE id = ?`,
+            [nombre || apellido1 || apellido2 || email || user[0].email, idUser]
         );
 
         res.send({
             status: 'Ok',
-            message:
-                'Los datos de usuario han sido modificados con éxito.',
+            message: 'Datos del usuario modificados con éxito',
         });
     } catch (error) {
+        // En caso de error, lo pasamos al siguiente middleware (el de error)
         next(error);
     } finally {
+        // Siempre al final de este controlador soltaremos la conexión si esta existe
         if (connection) connection.release();
     }
 };
+
 
 module.exports = editUser;

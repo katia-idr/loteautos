@@ -1,8 +1,7 @@
 
 const getDB = require('../../database/getDB');
 const bcrypt = require('bcrypt');
-const showError = require ('../../helpers');
-
+const { showError } = require('../../helpers')
 
 
 
@@ -17,7 +16,7 @@ const newUser = async (req, res, next) => {
             throw showError('¡Ups! Has olvidado escribir tu nombre.', 400);
             }
 
-       /* if (!apellido1) {
+        if (!apellido1) {
                throw showError ('¡Ups! Has olvidado escribir tu apellido.', 400);
                } 
 
@@ -27,7 +26,7 @@ const newUser = async (req, res, next) => {
 
                   if (!password) {
                      throw showError  ('¡Ups! Has olvidado escribir una contraseña.', 400);
-                     } */
+                     } 
    
 
 

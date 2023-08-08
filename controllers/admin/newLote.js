@@ -1,7 +1,6 @@
 
 const getDB = require('../../database/getDB');
-const showError = require ('../../helpers');
-
+const { showError } = require('../../helpers')
 
 
 
@@ -15,7 +14,7 @@ const newLote = async (req, res, next) => {
         if (!nombre) {
             throw showError('¡Ups! Has olvidado escribir el nombre.', 400);
             }
-            /* if (!razonsocial) {
+             if (!razonsocial) {
                throw showError ('¡Ups! Has olvidado escribir el RFC.', 400);
                }
       
@@ -24,7 +23,7 @@ const newLote = async (req, res, next) => {
                   }
                   if (!telefono) {
                      throw showError('¡Ups! Has olvidado escribir el teléfono.', 400);
-                     } */
+                     } 
 
 
             const [lote] = await connection.query (

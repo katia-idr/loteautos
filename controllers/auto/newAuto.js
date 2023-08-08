@@ -1,6 +1,6 @@
 
 const getDB = require('../../database/getDB');
-const showError = require ('../../helpers');
+const { showError } = require('../../helpers');
 
 
 

@@ -1,8 +1,11 @@
 
+require("dotenv").config();
 const getDB = require('../../database/getDB');
 const bcrypt = require('bcrypt');
-const showError = require ('../../helpers');
+const { showError } = require('../../helpers')
 const jwt = require('jsonwebtoken');
+
+
 
 
 const logUser = async (req, res, next) => {

@@ -1,4 +1,4 @@
-const getDB = require('../db/getDB');
+const getDB = require('../database/getDB');
 const jwt = require('jsonwebtoken');
 const { showError } = require('../helpers');
 require('dotenv').config();
