@@ -22,7 +22,8 @@ async function main() {
       await connection.query (`create table if not exists lote (
          id int unsigned primary key auto_increment,
          nombre varchar(80),
-         razonsocial varchar(50),
+         razonsocial varchar(100),
+         rfc varchar(20) unique,
          direccion varchar(250),
          telefono varchar (50),
          createdAt DATETIME
@@ -39,8 +40,10 @@ async function main() {
 
       await connection.query (`create table if not exists auto(
          id INT UNSIGNED PRIMARY KEY auto_increment,
-            placa varchar(30),
-            vin varchar(50),
+            placa varchar(30) unique not null,
+            vin varchar(50) unique not null,
+            marca varchar(50),
+            modelo varchar(50),
             año varchar(10),
             version varchar(100),
             tipo VARCHAR(100),

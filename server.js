@@ -20,43 +20,78 @@ const publicPath = path.join(__dirname, 'public');
 app.use(express.static(publicPath));
 
 
-const newUser = require ('./controllers/user/newUser')
-const newLote = require ('./controllers/admin/newLote')
-const logUser = require ('./controllers/user/logUser')
-const profileUser = require ('./controllers/user/profileUser')
+const newUser = require ('./controllers/user/newUser');
+const newLote = require ('./controllers/admin/newLote');
+const logUser = require ('./controllers/user/logUser');
+const profileUser = require ('./controllers/user/profileUser');
 const newAuto = require ('./controllers/auto/newAuto');
 const deleteUser = require('./controllers/admin/deleteUser');
 const editUser = require ('./controllers/user/editUser');
 const editUserPass = require('./controllers/user/editUserPass');
-const tokenMatches = require ('./middlewares/tokenMatches')
+const tokenMatches = require ('./middlewares/tokenMatches');
+const isAdmin = require ('./middlewares/isAdmin');
+const newAdmin = require('./controllers/admin/newAdmin');
+const isLogged = require('./middlewares/isLogged');
+const newAutoPhoto = require('./controllers/auto/newAutoPhoto');
+const getAuto = require('./controllers/auto/getAuto');
+const getListAutos = require ('./controllers/auto/getListAutos');
+const editAuto = require('./controllers/auto/editAuto');
 
 
-app.post('/register/auto', newAuto);
-app.post('/register/usuario', newUser);
-app.post('/register/lote', newLote);
-app.post('/login', logUser);
-app.get('/user/:idUser', profileUser);
+//endpoints admin
+//para crear lotes
+app.post('/register/lote', isLogged, newLote);
 
 //delete user
-app.delete('/user/delete', deleteUser)
+app.delete('/user/delete', deleteUser);
+
+//para crear nuevo admin
+app.post('/user/admin', newAdmin);
+
+
+//endpoints user
+//new user
+app.post('/register/usuario', newUser);
+
+//login
+app.post('/login', logUser);
+
+//user profile
+app.get('/user/:idUser', isLogged, profileUser);
 
 //editar usuario
 app.put('/user/:idUser/edit', editUser);
 
 //cambiar pass usuario
-app.put('/user/:idUser/newpass', tokenMatches, editUserPass)
+app.put('/user/:idUser/newpass', tokenMatches, editUserPass);
+
+
+
+//endpoints autos
+//registrar auto
+app.post('/register/auto', isLogged, newAuto);
+
+//añadir foto
+app.post('/register/auto/photo', isLogged, newAutoPhoto);
 
 
 //un auto
-//autos 1 concesionaria
+app.get ('/auto/:idAuto', getAuto);
+
+
 //todos los autos
+app.get ('/auto/todos', getListAutos);
+
+
+//editar auto
+app.put('/auto/:idAuto/edit', editAuto);
 
 
 
 
 
 
-app.use((error, req, res, _) => {
+app.use((error, req, res, next) => {
     console.error(error);
     res.status(error.httpStatus || 500);
     res.send({

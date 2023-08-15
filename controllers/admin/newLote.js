@@ -9,26 +9,30 @@ const newLote = async (req, res, next) => {
 
     try {
         connection = await getDB();
-        const { nombre, razonsocial, direccion, telefono} = req.body;
+        const { nombre, razonsocial, rfc, direccion, telefono} = req.body;
         
         if (!nombre) {
             throw showError('¡Ups! Has olvidado escribir el nombre.', 400);
             }
              if (!razonsocial) {
-               throw showError ('¡Ups! Has olvidado escribir el RFC.', 400);
+               throw showError ('¡Ups! Has olvidado escribir la razón social.', 400);
                }
-      
+               if (!rfc) {
+                throw showError ('¡Ups! Has olvidado escribir el RFC.', 400);
+                }
+
                if (!direccion) {
                   throw showError('¡Ups! Has olvidado escribir la dirección.', 400);
                   }
+
                   if (!telefono) {
                      throw showError('¡Ups! Has olvidado escribir el teléfono.', 400);
                      } 
 
 
             const [lote] = await connection.query (
-                `SELECT id FROM lote WHERE razonsocial = ?`,
-                [razonsocial]
+                `SELECT id FROM lote WHERE rfc = ?`,
+                [rfc]
             )
 
             if (lote.length > 0){
@@ -37,9 +41,9 @@ const newLote = async (req, res, next) => {
 
 
             await connection.query(`
-            insert into lote (nombre, razonsocial, direccion, telefono, createdAt)
-            values (?,?,?,?,?)`,
-            [nombre, razonsocial, direccion, telefono, new Date()]);
+            insert into lote (nombre, razonsocial, rfc, direccion, telefono, createdAt)
+            values (?,?,?,?,?,?)`,
+            [nombre, razonsocial, rfc, direccion, telefono, new Date()]);
 
             res.send({
                 status: 'Ok',

@@ -5,12 +5,12 @@ const { showError } = require('../../helpers')
 
 
 
-const newUser = async (req, res, next) => {
+const newAdmin = async (req, res, next) => {
     let connection;
 
     try {
         connection = await getDB();
-        const { nombre, apellido1, apellido2, email, password, rfc } = req.body;
+        const { nombre, apellido1, apellido2, email, password } = req.body;
         
         if (!nombre) {
             throw showError('¡Ups! Has olvidado escribir tu nombre.', 400);
@@ -28,9 +28,6 @@ const newUser = async (req, res, next) => {
              throw showError  ('¡Ups! Has olvidado escribir una contraseña.', 400);
                      } 
    
-           if (!rfc) {
-                throw showError  ('¡Ups! Necesitas escribir el RFC de tu concesionaria.', 400);
-                                } 
 
             const [user] = await connection.query (
                 `SELECT id FROM user WHERE email = ?`,
@@ -41,20 +38,13 @@ const newUser = async (req, res, next) => {
                 throw showError('¡Ups! Ya existe un usuario registrado con ese mail.', 409)
             }
 
-            const [rfcCheck] = await connection.query (
-                `SELECT * FROM lote WHERE rfc = ?`,
-                [rfc]
-            )
-
-            if (rfcCheck.length < 1){
-                throw showError('¡Ups! No hay ninguna concesionaria registrado con ese nombre. Ponte en contacto con tu administrador para que haga elregistro. ', 409)
-            }
+            
             const cryptoPass = await bcrypt.hash(password, 10);
 
             await connection.query(`
-            insert into user (nombre, apellido1, apellido2, email, password, tipo, idLote, createdAt)
-            values (?,?,?,?,?,?,?,?)`,
-            [nombre, apellido1, apellido2, email, cryptoPass, 'normal', rfcCheck[0].id, new Date()]);
+            insert into user (nombre, apellido1, apellido2, email, password, tipo, createdAt)
+            values (?,?,?,?,?,?,?)`,
+            [nombre, apellido1, apellido2, email, cryptoPass, 'admin', new Date()]);
 
             res.send({
                 status: 'Ok',
@@ -69,4 +59,4 @@ const newUser = async (req, res, next) => {
     }
 };
 
-module.exports = newUser;
+module.exports = newAdmin;

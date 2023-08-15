@@ -1,6 +1,6 @@
 const getDB = require ('../../database/getDB');
 const bcrypt = require('bcrypt');
-const showError = require ('../../helpers');
+const { showError } = require('../../helpers');
 
 const saltRounds = 10;
 

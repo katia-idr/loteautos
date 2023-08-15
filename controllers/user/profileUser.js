@@ -20,7 +20,7 @@ const profileUser = async (req, res, next) => {
                 [idUser]
             );
 
-            if (user.length === 0) {
+            if (user.length <1) {
                 throw showError(
                     'No existe el perfil que estas buscando.',
                     404
@@ -29,12 +29,12 @@ const profileUser = async (req, res, next) => {
 
         } else {
             [user] = await connection.query(
-                `SELECT id, name, username, email, lastname, avatar, bio, privacy, url FROM user WHERE id = ?`,
+                `SELECT id, nombre, apellido1, apellido2, email, tipo FROM user WHERE id = ?`,
                 [idUser]
             );
         }
 
-        if (user.length === 0) {
+        if (user.length <1) {
             throw showError(
                 'No existe el usuario que estás buscando.',
                 404

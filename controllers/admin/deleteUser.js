@@ -9,16 +9,16 @@ const deleteUser = async (req, res, next) => {
        // Abrimos una nueva conexion a la base de datos
        connection = await getDB();
 
-       // Obtenemos el id del usuario a borrar
+       // Obtenemos el mail del usuario a borrar
        const { idMail } = req.body;
 
        // Comprobar que si hay usuarios con ese mail
        const [userMail] = await connection.query (
-         `SELECT id FROM user WHERE email = ?`,
+         `SELECT * FROM user WHERE email = ?`,
          [idMail]
      )
 
-     if (userMail.length <= 0){
+     if (userMail.length < 1){
          throw showError('¡Ups! No hay usuarios registrados con ese mail.', 409)
      } 
 
