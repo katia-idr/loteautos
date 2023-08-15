@@ -48,14 +48,13 @@ async function savePhoto(imagen, type) {
            sharpImage.resize(150, 150);
        } else if (type === 1) {
            imageDirectory = path.join(autoDir, imageName);
-           sharpImage.resize(1000, 1000);
        }
        await sharpImage.toFile(imageDirectory);
 
        return imageName;
    } catch (error) {
        throw new Error(
-           'Ha habido un error al procesar la imagen. Intentalo de nuevo.'
+           'Ha habido un error al procesar la imagen. Inténtalo de nuevo.'
        );
    }
 }

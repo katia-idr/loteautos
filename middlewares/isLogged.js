@@ -6,9 +6,7 @@ const isLogged = async (req, res, next) => {
    let connection;
    try { 
       connection = await getDB()
-
       const {authorization} = req.headers;
-
       if (!authorization) {
          throw showError ('¡Ups! Falta la autorización correspondiente.',401)
       }
@@ -23,15 +21,17 @@ const isLogged = async (req, res, next) => {
       const [user] = await connection.query (
          `select * from user where id = ?`,
          [tokenInfo.id] 
-
       )
 
       if (user.length < 1) {
          throw showError ('El token no es válido.',401)
       }
 
-      //Aquí guardamos el ID del usuario que está loggeado
-      req.userAuth = tokenInfo
+      req.userAuth = tokenInfo;
+      req.loteId = user[0].idLote
+
+    
+
       next()
 
    } catch (error) {
@@ -40,5 +40,4 @@ const isLogged = async (req, res, next) => {
    if (connection) connection.release
    }
 }
-
 module.exports = isLogged

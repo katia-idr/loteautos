@@ -57,7 +57,8 @@ async function main() {
             preciocompra int unsigned,
             precioventa int unsigned,
             comentarios text,
-            createdAt DATETIME,
+            creation_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+            modification_time DATETIME ON UPDATE CURRENT_TIMESTAMP,
             idLote INT UNSIGNED,
             FOREIGN KEY (idLote) REFERENCES lote (id)
       ) `);

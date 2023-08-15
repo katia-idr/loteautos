@@ -12,45 +12,23 @@ const editUser = async (req, res, next) => {
         const { idUser } = req.params;
 
         // Recuperamos los datos del body
-        const { nombre, apellido1, apellido2, email } = req.body;
+        const { nombre, apellido1, apellido2, email} = req.body;
 
+        
         // Recuperamos los datos del usuario para no modificar datos a nulo
         const [user] = await connection.query(
             `SELECT * FROM user WHERE id = ?`,
             [idUser]
         );
 
-        // Podríamos comprobar si falta algun dato obligatorio
-        if (!nombre) {
-            throw showError(
-                'Por favor escribe tu nombre.',
-                400
-            );
-        }
 
-        if (!apellido1) {
-            throw showError(
-                'Por favor escribe tu apellido.',
-                400
-            );
-        }
-
-
-        //Comprobar que no haya otro usuario con el mismo mail
-        const [userMail] = await connection.query (
-            `SELECT id FROM user WHERE email = ?`,
-            [email]
-        )
-
-        if (userMail.length > 0){
-            throw showError('¡Ups! Ya existe un usuario registrado con ese mail.', 409)
-        }
 
         // Actualizamos los campos del usuario según lo que cubra
         await connection.query(
-            `UPDATE user SET nombre = ?, apellido1 = ?, apellido2 = ?, email = ? WHERE id = ?`,
-            [nombre || apellido1 || apellido2 || email || user[0].email, idUser]
-        );
+            `UPDATE user SET nombre = ?, apellido1 = ?, apellido2 = ?, email=? WHERE id = ?`,
+            [nombre || user[0].nombre, apellido1 || user[0].apellido1, apellido2 || user[0].apellido2, email || user[0].email, idUser]);
+
+            
 
         res.send({
             status: 'Ok',

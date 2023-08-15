@@ -29,6 +29,8 @@ const tokenMatches = async (req, res, next) => {
             [tokenInfo.id]
         );
 
+
+        
         if (!user) {
             throw showError(
                 '¡Ups! Algo salió mal. Inicia sesión nuevamente por favor.',

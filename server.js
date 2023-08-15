@@ -1,6 +1,4 @@
 
-
-
 const express = require('express');
 const path = require ('path');
 const app = express();
@@ -8,11 +6,11 @@ const PORT  = process.env.PORT || 4000;
 
 app.use(express.json());
 
+const fileUpload = require('express-fileupload');
 
 app.get('/', function (req, res){
    res.sendFile(path.join(__dirname, '/public/'))
 })
-
 
 const publicPath = path.join(__dirname, 'public');
 
@@ -20,6 +18,7 @@ const publicPath = path.join(__dirname, 'public');
 app.use(express.static(publicPath));
 
 
+//controladores
 const newUser = require ('./controllers/user/newUser');
 const newLote = require ('./controllers/admin/newLote');
 const logUser = require ('./controllers/user/logUser');
@@ -40,10 +39,10 @@ const editAuto = require('./controllers/auto/editAuto');
 
 //endpoints admin
 //para crear lotes
-app.post('/register/lote', isLogged, newLote);
+app.post('/register/lote', isLogged, isAdmin, newLote);
 
 //delete user
-app.delete('/user/delete', deleteUser);
+app.delete('/user/delete', isLogged, isAdmin, deleteUser);
 
 //para crear nuevo admin
 app.post('/user/admin', newAdmin);
@@ -60,10 +59,10 @@ app.post('/login', logUser);
 app.get('/user/:idUser', isLogged, profileUser);
 
 //editar usuario
-app.put('/user/:idUser/edit', editUser);
+app.put('/user/:idUser/edit', isLogged, tokenMatches, editUser);
 
 //cambiar pass usuario
-app.put('/user/:idUser/newpass', tokenMatches, editUserPass);
+app.put('/user/:idUser/newpass', isLogged, tokenMatches, editUserPass);
 
 
 
@@ -72,11 +71,12 @@ app.put('/user/:idUser/newpass', tokenMatches, editUserPass);
 app.post('/register/auto', isLogged, newAuto);
 
 //añadir foto
-app.post('/register/auto/photo', isLogged, newAutoPhoto);
+app.put('/register/auto/:idAuto/photo', isLogged, fileUpload({ debug: true }), newAutoPhoto)
+
 
 
 //un auto
-app.get ('/auto/:idAuto', getAuto);
+app.get ('/auto/:idAuto', isLogged, getAuto);
 
 
 //todos los autos
@@ -84,7 +84,7 @@ app.get ('/auto/todos', getListAutos);
 
 
 //editar auto
-app.put('/auto/:idAuto/edit', editAuto);
+app.put('/auto/:idAuto/edit', isLogged, tokenMatches, editAuto);
 
 
 

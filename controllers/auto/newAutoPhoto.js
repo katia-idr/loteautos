@@ -2,13 +2,13 @@ const getDB = require ('../../database/getDB');
 const { showError, savePhoto } = require ('../../helpers')
 
 
+
 const newAutoPhoto = async (req, res, next) => {
    let connection;
 
    try {
        connection = await getDB();
 
-       // Consulta bbdd para saber número de fotos existentes
        const { idAuto } = req.params;
 
        const [photos] = await connection.query(
@@ -16,7 +16,6 @@ const newAutoPhoto = async (req, res, next) => {
            [idAuto]
        );
 
-       // Si hay ya 15 fotos lanzamos un error
        if (photos.length >= 15) {
            throw showError(
                'Este auto ya tiene 15 fotos. No puedes agregar más.',
@@ -24,7 +23,8 @@ const newAutoPhoto = async (req, res, next) => {
            );
        }
 
-       // Si no indica la nueva foto del auto, lanzamos un error
+       console.log(req.files)
+
        if (!req.files || !req.files.autoPhoto) {
            throw showError('¡Ups! Selecciona la foto que quieres añadir por favor.', 400);
        }
