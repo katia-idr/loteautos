@@ -16,6 +16,8 @@ const newAutoPhoto = async (req, res, next) => {
            [idAuto]
        );
 
+
+
        if (photos.length >= 15) {
            throw showError(
                'Este auto ya tiene 15 fotos. No puedes agregar más.',
@@ -23,13 +25,11 @@ const newAutoPhoto = async (req, res, next) => {
            );
        }
 
-       console.log(req.files)
 
        if (!req.files || !req.files.autoPhoto) {
            throw showError('¡Ups! Selecciona la foto que quieres añadir por favor.', 400);
        }
 
-       // Si la indica ya la insertamos, para ello primero recuperamos el nombre
        const photoName = await savePhoto(req.files.autoPhoto, 1);
 
        await connection.query(

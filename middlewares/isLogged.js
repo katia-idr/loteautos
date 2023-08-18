@@ -24,7 +24,7 @@ const isLogged = async (req, res, next) => {
       )
 
       if (user.length < 1) {
-         throw showError ('El token no es válido.',401)
+         throw showError ('¡Ups! No has iniciado sesión.',401)
       }
 
       req.userAuth = tokenInfo;

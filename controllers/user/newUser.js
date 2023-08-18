@@ -47,14 +47,14 @@ const newUser = async (req, res, next) => {
             )
 
             if (rfcCheck.length < 1){
-                throw showError('¡Ups! No hay ninguna concesionaria registrado con ese nombre. Ponte en contacto con tu administrador para que haga elregistro. ', 409)
+                throw showError('¡Ups! No hay ninguna concesionaria registrada con ese RFC. Ponte en contacto con tu administrador para que haga el registro. ', 409)
             }
             const cryptoPass = await bcrypt.hash(password, 10);
 
             await connection.query(`
             insert into user (nombre, apellido1, apellido2, email, password, tipo, idLote, createdAt)
             values (?,?,?,?,?,?,?,?)`,
-            [nombre, apellido1, apellido2, email, cryptoPass, 'normal', rfcCheck[0].id, new Date()]);
+            [nombre, apellido1, apellido2, email, cryptoPass, 'user', rfcCheck[0].id, new Date()]);
 
             res.send({
                 status: 'Ok',

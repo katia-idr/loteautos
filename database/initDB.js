@@ -80,7 +80,7 @@ async function main() {
          apellido2 VARCHAR(50),
          email VARCHAR(100) not null,
          password VARCHAR(255) not null,
-         tipo ENUM('admin', 'normal') DEFAULT 'normal',
+         tipo ENUM('admin', 'user') DEFAULT 'user',
          createdAt DATETIME,
          idLote INT UNSIGNED,
          FOREIGN KEY (idLote) REFERENCES lote (id)

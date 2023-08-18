@@ -73,15 +73,11 @@ app.post('/register/auto', isLogged, newAuto);
 //añadir foto
 app.put('/register/auto/:idAuto/photo', isLogged, fileUpload({ debug: true }), newAutoPhoto)
 
-
-
 //un auto
 app.get ('/auto/:idAuto', isLogged, getAuto);
 
-
 //todos los autos
-app.get ('/auto/todos', getListAutos);
-
+app.get ('/autos/todos', isLogged, getListAutos);
 
 //editar auto
 app.put('/auto/:idAuto/edit', isLogged, tokenMatches, editAuto);

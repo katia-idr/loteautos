@@ -10,7 +10,7 @@ const newAuto = async (req, res, next) => {
 
     try {
         connection = await getDB();
-        const { placa, vin, marca, modelo, año, version, tipo, color, puertas, dobletraccion, kilometraje, adquisicion, entidadplaca, fechaadqui, preciocompra, precioventa, loterfc, comentarios} = req.body;
+        const { placa, vin, marca, modelo, año, version, tipo, color, puertas, dobletraccion, kilometraje, adquisicion, entidadplaca, fechaadqui, preciocompra, precioventa, comentarios} = req.body;
         
         if (!placa) {
             throw showError('¡Ups! Has olvidado escribir la placa.', 400);
@@ -20,9 +20,6 @@ const newAuto = async (req, res, next) => {
                throw showError('¡Ups! Has olvidado escribir el número VIN.', 400);
                } 
 
-               if (!loterfc) {
-                throw showError('¡Ups! Has olvidado escribir el RFC del lote al que pertenece este auto.', 400);
-                } 
 
             let [auto] = await connection.query (
                 `SELECT id FROM auto WHERE placa = ?`,
@@ -42,20 +39,11 @@ const newAuto = async (req, res, next) => {
                 throw showError('¡Ups! Ya existe un auto registrado con ese VIN.', 409)
             }
 
-            const [rfcCheck] = await connection.query (
-                `SELECT * FROM lote WHERE rfc = ?`,
-                [loterfc]
-            )
-
-            if (rfcCheck.length < 1){
-                throw showError('¡Ups! No hay ninguna concesionaria registrada con ese nombre. Ponte en contacto con tu administrador para que registre el lote correspondiente. ', 409)
-            }
-
 
             await connection.query(`
             insert into auto (placa, vin, marca, modelo, año, version, tipo, color, puertas, dobletraccion, kilometraje, adquisicion, entidadplaca, fechaadqui, preciocompra, precioventa, idLote, comentarios )
             values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
-            [placa, vin, marca, modelo, año, version, tipo, color, puertas, dobletraccion, kilometraje, adquisicion, entidadplaca, fechaadqui, preciocompra, precioventa, rfcCheck[0].id, comentarios, Date()]);
+            [placa, vin, marca, modelo, año, version, tipo, color, puertas, dobletraccion, kilometraje, adquisicion, entidadplaca, fechaadqui, preciocompra, precioventa, req.loteId, comentarios, Date()]);
 
             res.send({
                 status: 'Ok',
