@@ -52,7 +52,7 @@ app.post('/register/admin', newAdmin);
 
 //endpoints user
 //new user / frontend:check
-app.post('/register/usuario', newUser);
+app.post('/register/user', newUser);
 
 //login / frontend:check
 app.post('/login', logUser);
