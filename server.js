@@ -2,9 +2,11 @@
 const express = require('express');
 const path = require ('path');
 const app = express();
+const cors = require ("cors");
 const PORT  = process.env.PORT || 4000;
 
 app.use(express.json());
+app.use(cors());
 
 const fileUpload = require('express-fileupload');
 
@@ -38,36 +40,36 @@ const editAuto = require('./controllers/auto/editAuto');
 
 
 //endpoints admin
-//para crear lotes
+//para crear lotes / frontend:check
 app.post('/register/lote', isLogged, isAdmin, newLote);
 
 //delete user
 app.delete('/user/delete', isLogged, isAdmin, deleteUser);
 
-//para crear nuevo admin
-app.post('/user/admin', newAdmin);
+//para crear nuevo admin / frontend:check
+app.post('/register/admin', newAdmin);
 
 
 //endpoints user
-//new user
+//new user / frontend:check
 app.post('/register/usuario', newUser);
 
-//login
+//login / frontend:check
 app.post('/login', logUser);
 
-//user profile
+//user profile 
 app.get('/user/:idUser', isLogged, profileUser);
 
-//editar usuario
+//editar usuario /frontend:check
 app.put('/user/:idUser/edit', isLogged, tokenMatches, editUser);
 
-//cambiar pass usuario
+//cambiar pass usuario / frontend:Check
 app.put('/user/:idUser/newpass', isLogged, tokenMatches, editUserPass);
 
 
 
 //endpoints autos
-//registrar auto
+//registrar auto / frontend:check
 app.post('/register/auto', isLogged, newAuto);
 
 //añadir foto
@@ -79,7 +81,7 @@ app.get ('/auto/:idAuto', isLogged, getAuto);
 //todos los autos
 app.get ('/autos/todos', isLogged, getListAutos);
 
-//editar auto
+//editar auto 
 app.put('/auto/:idAuto/edit', isLogged, tokenMatches, editAuto);
 
 
