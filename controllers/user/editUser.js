@@ -15,6 +15,15 @@ const editUser = async (req, res, next) => {
         const { nombre, apellido1, apellido2, email} = req.body;
 
         
+
+        if (!(nombre || apellido1 || apellido2 || email)) {
+            throw showError(
+                '¡Ups! No has ingresado ningún cambio.',
+                400
+            );
+        }
+
+
         // Recuperamos los datos del usuario para no modificar datos a nulo
         const [user] = await connection.query(
             `SELECT * FROM user WHERE id = ?`,

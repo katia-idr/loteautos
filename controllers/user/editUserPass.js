@@ -16,6 +16,7 @@ const editUserPass = async (req, res, next) => {
 
         // Vamos a pedir que nos indique la contraseña antigua y la nueva
         const { oldPass, newPass } = req.body;
+        console.log("editarcontraseña", req.body)
 
         // Si no existe alguna de estas lanzamos un error
         if (!oldPass) {

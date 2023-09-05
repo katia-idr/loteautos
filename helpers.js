@@ -48,11 +48,13 @@ async function savePhoto(imagen, type) {
            sharpImage.resize(150, 150);
        } else if (type === 1) {
            imageDirectory = path.join(autoDir, imageName);
+           sharpImage.resize(300, 300);
        }
        await sharpImage.toFile(imageDirectory);
 
        return imageName;
    } catch (error) {
+        console.log(error.message)
        throw new Error(
            'Ha habido un error al procesar la imagen. Inténtalo de nuevo.'
        );

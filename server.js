@@ -43,7 +43,7 @@ const editAuto = require('./controllers/auto/editAuto');
 //para crear lotes / frontend:check
 app.post('/register/lote', isLogged, isAdmin, newLote);
 
-//delete user
+//delete user / 
 app.delete('/user/delete', isLogged, isAdmin, deleteUser);
 
 //para crear nuevo admin / frontend:check
@@ -70,7 +70,7 @@ app.put('/user/:idUser/newpass', isLogged, tokenMatches, editUserPass);
 
 //endpoints autos
 //registrar auto / frontend:check
-app.post('/register/auto', isLogged, newAuto);
+app.post('/register/auto', isLogged, fileUpload({ debug: true }), newAuto);
 
 //añadir foto
 app.put('/register/auto/:idAuto/photo', isLogged, fileUpload({ debug: true }), newAutoPhoto)

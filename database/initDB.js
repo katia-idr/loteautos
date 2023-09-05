@@ -44,7 +44,7 @@ async function main() {
             vin varchar(50) unique not null,
             marca varchar(50),
             modelo varchar(50),
-            año varchar(10),
+            year varchar(4),
             version varchar(100),
             tipo VARCHAR(100),
             color varchar(80),
