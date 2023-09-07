@@ -10,12 +10,10 @@ app.use(cors());
 const fileUpload = require("express-fileupload");
 
 app.get("/", function (req, res) {
-    res.sendFile(path.join(__dirname, "/public/"));
+    res.send({
+        message: 'Autobit API'
+    });
 });
-
-const publicPath = path.join(__dirname, "public");
-
-app.use(express.static(publicPath));
 
 const imagesPath = path.join(__dirname, "static/auto");
 
@@ -57,7 +55,7 @@ app.post("/register/user", newUser);
 app.post("/login", logUser);
 
 //user profile
-app.get("/user/:idUser", isLogged, profileUser);
+app.get("/user", isLogged, profileUser);
 
 //editar usuario /frontend:check
 app.put("/user/:idUser/edit", isLogged, tokenMatches, editUser);
