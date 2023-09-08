@@ -6,6 +6,7 @@ const newAuto = async (req, res, next) => {
 
     try {
         connection = await getDB();
+
         const {
             placa,
             vin,
@@ -24,7 +25,7 @@ const newAuto = async (req, res, next) => {
             preciocompra,
             precioventa,
             comentarios,
-            loteId
+            loteId,
         } = req.body;
 
         if (!placa) {
@@ -60,7 +61,7 @@ const newAuto = async (req, res, next) => {
 
         const loteIdToSave = req.loteId || loteId;
         if (!loteIdToSave) {
-            throw showError('El lote es un dato obligatorio.', 409);
+            throw showError("El lote es un dato obligatorio.", 409);
         }
 
         await connection.query(
@@ -97,38 +98,33 @@ const newAuto = async (req, res, next) => {
         );
         const idAuto = autoData[0][0].id;
 
-        //Pego todo lo de añadir foto
-        //de la 14 a 39
-        const [photos] = await connection.query(
-            `SELECT id FROM auto_photo WHERE idAuto = ?`,
-            [idAuto],
-        );
-
-        if (photos.length >= 15) {
-            throw showError(
-                "Este auto ya tiene 15 fotos. No puedes agregar más.",
-                403,
+        if (req.files.autoPhoto) {
+            const [photos] = await connection.query(
+                `SELECT id FROM auto_photo WHERE idAuto = ?`,
+                [idAuto],
             );
+
+            if (photos.length >= 15) {
+                throw showError(
+                    "Este auto ya tiene 15 fotos. No puedes agregar más.",
+                    403,
+                );
+            }
+
+            const newPhotos = Array.isArray(req.files.autoPhoto) ? req.files.autoPhoto : [req.files.autoPhoto];
+
+            const imagesToUpload = newPhotos.map(async (file) => {
+                const photoName = await savePhoto(file, 1);
+
+                await connection.query(
+                    `INSERT INTO auto_photo (name, idAuto)
+                        VALUES (?, ?)`,
+                    [photoName, idAuto],
+                );
+            });
+
+            await Promise.all(imagesToUpload);
         }
-
-        if (!req.files || !req.files.autoPhoto) {
-            throw showError(
-                "¡Ups! Selecciona la foto que quieres añadir por favor.",
-                400,
-            );
-        }
-
-        const imagesToUpload = req.files.autoPhoto.map(async file => {
-            const photoName = await savePhoto(file, 1);
-
-            await connection.query(
-                `INSERT INTO auto_photo (name, idAuto)
-                    VALUES (?, ?)`,
-                [photoName, idAuto],
-            );
-        });
-
-        await Promise.all(imagesToUpload);
 
         res.send({
             status: "Ok",

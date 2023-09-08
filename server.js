@@ -36,10 +36,12 @@ const newAutoPhoto = require("./controllers/auto/newAutoPhoto");
 const getAuto = require("./controllers/auto/getAuto");
 const getListAutos = require("./controllers/auto/getListAutos");
 const editAuto = require("./controllers/auto/editAuto");
+const listaLotes = require("./controllers/admin/listaLotes");
 
 //endpoints admin
 //para crear lotes / frontend:check
 app.post("/register/lote", isLogged, isAdmin, newLote);
+app.get("/lotes", isLogged, isAdmin, listaLotes);
 
 //delete user /
 app.delete("/user/delete", isLogged, isAdmin, deleteUser);
